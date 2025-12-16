@@ -6,10 +6,7 @@ st.set_page_config(page_title="LMS Timestamp Remover")
 
 st.title("LMS Report – Remove Timestamp Columns")
 
-uploaded_file = st.file_uploader(
-    "Upload LMS Excel file",
-    type=["xlsx"]
-)
+uploaded_file = st.file_uploader("Upload LMS Excel file", type=["xlsx"])
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
@@ -25,10 +22,13 @@ if uploaded_file:
 
     st.success("Timestamps removed successfully")
 
-    st.download_button(
-    label="Download cleaned Excel file",
-    data=buffer,
-    file_name="lms_report_without_timestamps.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
+    output = BytesIO()
+    clean_df.to_excel(output, index=False)
+    excel_bytes = output.getvalue()
 
+    st.download_button(
+        label="Download cleaned Excel file",
+        data=excel_bytes,
+        file_name="lms_report_without_timestamps.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
